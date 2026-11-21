@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101b22"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon.png">
+<title>Nashik / First Drive — Free Roam</title><link rel="stylesheet" href="styles.css">
+</head><body>
+<canvas id="gl" aria-label="3D city driving game"></canvas>
+<div id="error" hidden role="alert"></div>
+<div id="start-screen" class="start-screen"><div class="cover">
+  <div class="kicker">NASHIK / FIRST DRIVE <span>MAP BLOCKOUT</span></div>
+  <h1>YOUR CITY.<br><em>YOUR DRIVE.</em></h1>
+  <p>Explore the College Road district. Free roam, no missions. This is an early map blockout.</p>
+  <button id="start-btn" class="primary">START DRIVING <span>↗</span></button>
+  <small>Mobile: landscape recommended • steering on the left, pedals on the right</small>
+</div></div>
+<div id="hud" class="hidden">
+  <header><div class="brand"><b>N<span>.</span></b><div>NASHIK <small>FIRST DRIVE</small></div></div>
+  <nav><button id="map-btn" aria-label="View map">MAP</button><button id="view-btn" aria-label="Change camera">CAM</button><button id="fullscreen-btn" title="Fullscreen" aria-label="Fullscreen">⛶</button><button id="pause-btn" aria-label="Pause">Ⅱ</button></nav>
+  </header>
+  <div class="status"><i></i><b id="state">FREE ROAM</b><span id="drive-status">DRIVING</span></div>
+  <div class="map-mini"><div class="mini-map-inner"><img src="map_preview.png" alt="Local map"><i id="minimap-dot"></i></div><span>COLLEGE ROAD</span></div>
+  <div class="bottom-bar"><div id="speed-panel" class="speed-panel"><b id="speed">000</b><small>KM/H</small></div>
+    <div class="helper">W/S DRIVE &nbsp; · &nbsp; A/D STEER &nbsp; · &nbsp; E ENTER/EXIT &nbsp; · &nbsp; M MAP</div>
+    <button id="interact-btn" class="interaction" aria-label="Enter or exit car">↗ <span>EXIT / ENTER</span></button>
+  </div>
+  <div class="mobile-controls" aria-label="Touch driving controls">
+    <div class="steer"><button data-key="left" aria-label="Steer left">◀</button><button data-key="right" aria-label="Steer right">▶</button></div>
+    <div class="pedals"><button data-key="backward" aria-label="Brake or reverse">BRAKE</button><button data-key="forward" aria-label="Accelerate">GO</button></div>
+  </div>
+</div>
+<div id="map-overlay" class="hidden"><div class="map-modal"><div class="map-header"><div><strong>COLLEGE ROAD / BLOCKOUT</strong><p>Free-roam map, approximate screenshot-derived geometry</p></div><button id="close-map">CLOSE ✕</button></div><div class="map-frame"><img src="map_preview.png" alt="Road layout"><i id="map-position"></i></div><div class="map-footer"><span>● YOUR POSITION</span><span id="location-text">MAP POSITION</span></div></div></div>
+<div id="rotate-hint" hidden><span>↻</span><strong>Rotate your phone</strong><small>Landscape gives you more room to drive.</small><button id="hint-dismiss">Continue in portrait</button></div>
+<script src="game.js"></script>
+</body></html>
