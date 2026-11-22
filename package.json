@@ -1,0 +1,10 @@
+{
+  "name": "nashik-first-drive",
+  "private": true,
+  "version": "2.2.0",
+  "description": "Nashik city explorer with player-following map and live street / location name",
+  "scripts": {
+    "build": "node scripts/build-public.mjs",
+    "test": "node scripts/test-mini-map.mjs && node scripts/test-city-explorer.mjs && node scripts/test-current-location.mjs"
+  }
+}

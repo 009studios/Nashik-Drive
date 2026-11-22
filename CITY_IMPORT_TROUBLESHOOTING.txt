@@ -1,0 +1,13 @@
+NASHIK FULL CITY BUILDER v2.0.2 — HOW TO USE
+1. Extract the zip. Open the Nashik-Drive-main folder.
+2. Double-click BUILD_FULL_NASHIK_CITY.command (right-click > Open if macOS blocks it).
+3. The builder will print a tile number, download host, and progress approximately every 12 seconds.
+4. After 36 tiles it writes city-world.json in the same folder and opens localhost:8000.
+5. The existing world.json (College Road) is not replaced.
+
+If a server returns HTTP 406/429/503 or times out, the script tries a second Overpass host and prints the error. If all requests fail, please save the actual error text. It is not a map-rendering failure.
+
+Do not test with curl -I: a HEAD request can return HTTP 406 on an otherwise functioning endpoint. For a simple GET availability test use:
+    curl -L --max-time 20 'https://overpass-api.de/api/status'
+
+Imports use public OpenStreetMap Overpass instances, which may be unavailable or busy. This zip changes error reporting and network handling, not the availability of those servers.

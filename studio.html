@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111820"><title>Nashik World Studio — Owner Workspace</title>
+<link rel="stylesheet" href="studio.css"><link rel="stylesheet" href="image-map.css"><link rel="stylesheet" href="geo-roads.css"></head>
+<body>
+<div class="studio-shell">
+  <header class="topbar"><div class="wordmark"><span class="logo">N<span>·</span></span><div><strong>WORLD STUDIO</strong><small>NASHIK / COLLEGE ROAD</small></div></div>
+    <div class="topactions"><span id="save-status" class="save-status">Loading map…</span><button id="undo" title="Undo (⌘/Ctrl + Z)">↶ <span>Undo</span></button><button id="redo" title="Redo (⌘/Ctrl + Shift + Z)">↷ <span>Redo</span></button><button id="image-map-open" class="image-map-trigger">Image → 3D Map</button><button id="geo-import-open" class="geo-map-trigger">Import Real Roads</button><button id="city-open" class="city-trigger">Area Buildings</button><button type="button" id="full-city-open" onclick="location.href='city-setup.html'" style="background:#264c47;color:#c4f8de;border:1px solid #477a68">Full Nashik City ↗</button><button id="street-match-open" class="street-match-trigger">Street Match</button><button id="preview">Preview game ↗</button><button id="export" class="accent">Export world.json ↓</button></div></header>
+  <div class="workspace">
+    <aside class="rail"><span class="rail-label">EDIT</span>
+      <button class="tool active" data-tool="select" title="Select and move (V)"><span>↖</span><small>Select</small></button>
+      <button class="tool" data-tool="building" title="Place a building (B)"><span>▥</span><small>Building</small></button>
+      <button class="tool" data-tool="polygon" title="Draw custom polygon (P)"><span>⬡</span><small>Polygon</small></button>
+      <button class="tool" data-tool="asset" title="Place a street object (A)"><span>♧</span><small>Props</small></button>
+      <button class="tool" data-tool="road" title="Paint road (R)"><span>━</span><small>Road</small></button>
+      <button class="tool" data-tool="cover" title="Cover a road (C)"><span>▰</span><small>Cover</small></button>
+      <button class="tool" data-tool="spawn" title="Move vehicle spawn (S)"><span>⌖</span><small>Spawn</small></button>
+      <span class="rail-label rail-bottom">VIEW</span><button id="zoom-in" class="rail-minibtn" title="Zoom in">+</button><button id="zoom-out" class="rail-minibtn" title="Zoom out">−</button><button id="fit" class="rail-minibtn" title="Fit map">⤢</button>
+    </aside>
+    <main class="map-panel"><div class="map-brief"><div><span class="tag">NASHIK WORLD STUDIO · V2.0 (AREA EDITOR)</span><h1>College Road world</h1><p>Map-aligned working reference — not survey-accurate GPS data</p></div><div class="counter"><b id="building-count">180</b><small>BUILDINGS</small></div><div class="counter"><b id="asset-count">13</b><small>PROPS</small></div><div class="counter"><b id="road-count">0</b><small>ROADS</small></div></div>
+      <div id="viewport" class="viewport"><canvas id="editor-map" aria-label="Editable Nashik map"></canvas><div class="map-overlay-tools"><button id="toggle-buildings" class="active">Buildings</button><button id="toggle-assets" class="active">Props</button><button id="toggle-roads" class="active">Roads</button><button id="toggle-grid">Grid</button><button id="focus-city" title="Zoom to imported streets and buildings">Focus city</button></div><div id="draw-hint" class="draw-hint hidden">Click to add polygon corners. Press Enter to finish, Esc to cancel.</div><div class="map-compass">N ↑</div></div>
+      <footer class="bottominfo"><span id="cursor-position">X — / Y —</span><span id="zoom-text">100%</span><span>Scroll to zoom · Space + drag to pan · Double click a building to edit</span></footer>
+    </main>
+    <aside class="inspector"><div class="inspector-top"><div class="eyebrow">PROPERTIES</div><h2 id="inspector-title">Nothing selected</h2><p id="inspector-subtitle">Select a building or prop on the map, or choose a placement tool.</p></div>
+      <div id="inspector-content" class="inspector-content"><div class="welcome"><div class="welcome-icon">▥</div><h3>Build your city</h3><p>Edit your building footprints, heights and streets without touching code. Everything is saved as a local draft until exported.</p></div></div>
+      <div class="inspector-footer"><button id="duplicate" disabled>Duplicate</button><button id="delete" disabled class="danger">Delete</button></div>
+    </aside>
+  </div>
+  <footer class="app-footer"><span><i class="live-dot"></i> <span id="active-tool-name">SELECT</span></span><span id="message" role="status">Changes are local to this browser until you export world.json.</span><button id="load-bundled" title="Back up current draft, then reload the world shipped with this ZIP">Load included map</button><button id="import">Import JSON</button><input type="file" accept=".json,application/json" id="import-input" hidden></footer>
+</div>
+<script src="shapes.js"></script><script src="geo-roads.js"></script><script src="studio.js"></script>
+<div class="image-map-modal" id="image-map-modal" hidden role="dialog" aria-modal="true" aria-labelledby="image-map-heading">
+  <div class="image-map-dialog">
+    <header class="image-map-head"><div><div class="image-map-step" style="margin:0 0 4px">IMAGE IMPORT · LOCAL PROCESSING</div><h2 id="image-map-heading">Image → 3D Map</h2><p>Upload a clean 2D map, sample building colors and generate editable blocks. No coding required.</p></div><button type="button" id="image-map-close" aria-label="Close">×</button></header>
+    <section class="image-map-body">
+      <div class="image-map-preview"><canvas id="image-map-canvas" width="1175" height="1280" aria-label="Click on map to sample building or road colors"></canvas><div class="image-map-file" id="image-map-filename">Upload an image or try the included Nashik map</div></div>
+      <aside class="image-map-sidebar">
+        <div class="image-map-group"><div class="image-map-step">01 / ADD IMAGE</div>
+          <div class="image-map-control"><label class="image-map-upload">Upload map image<input type="file" id="image-map-upload" accept="image/png,image/jpeg,image/webp"></label><button type="button" id="image-map-demo">Try existing map</button></div>
+          <div class="image-map-field"><label for="image-map-layout">Image alignment</label><select id="image-map-layout"><option data-layout value="contain">Fit entire image (no stretching)</option><option data-layout value="cover">Fill map (crop edges)</option></select></div>
+          <p>Best with clean, top-down maps where building footprints have distinct colors. Satellite photos and text-heavy screenshots may require manual tracing.</p>
+        </div>
+        <div class="image-map-group"><div class="image-map-step">02 / SHOW WHAT IS WHAT</div>
+          <h3>Click one or more building colors</h3><p>Choose a sample type, then tap its area in the image. Colored swatches can be removed.</p>
+          <div class="image-map-control"><button type="button" data-sample="building" class="active">Sample buildings</button><button type="button" data-sample="road">Sample road</button></div>
+          <div class="image-map-chips" id="image-map-chips"></div><p style="margin-top:9px">Building colors: <b id="image-map-swatches">0</b> · Road: <b id="image-map-road-count">Not selected</b><span class="image-map-road-swatch" id="image-map-road-swatch"></span></p>
+          <label class="image-map-check"><input id="image-map-clean" type="checkbox"> Simplify ground to sampled road surfaces (removes the original map's labels and imagery)</label>
+        </div>
+        <div class="image-map-group"><div class="image-map-step">03 / GENERATE</div>
+          <div class="image-map-field"><div class="image-map-labelrow"><label for="image-map-tolerance">Color tolerance</label><b id="image-map-tolerance-value">17</b></div><input type="range" id="image-map-tolerance" min="6" max="58" step="1" value="17"></div>
+          <div class="image-map-field"><div class="image-map-labelrow"><label for="image-map-min-size">Min building width (pixels)</label><b id="image-map-min-size-value">8</b></div><input type="range" id="image-map-min-size" min="3" max="30" value="8"></div>
+          <div class="image-map-field"><label for="image-map-width-metres">Approx. map width in metres</label><input id="image-map-width-metres" type="number" min="180" max="4700" step="10" value="764"><p style="margin-top:3px">Used to keep cars and buildings roughly in scale. The map itself has no GPS calibration.</p></div>
+          <div class="image-map-field"><label for="image-map-floors">Default floors (editable later)</label><input id="image-map-floors" type="number" min="1" max="20" value="3"></div>
+          <div class="image-map-control"><button type="button" id="image-map-generate" disabled>Detect buildings</button></div>
+          <p style="margin-top:10px">Detected buildings: <b id="image-map-detected">—</b> · Green outlines indicate proposed 3D blocks. Road color remains on the ground texture; this does not create GPS-accurate road navigation.</p>
+          <label class="image-map-check"><input id="image-map-replace" type="checkbox" checked> Replace old buildings (recommended for a different map image). Untick to merge.</label>
+        </div>
+        <div id="image-map-note" class="image-map-notice" role="status">Upload a map image to begin. All processing stays in your browser.</div>
+      </aside>
+    </section>
+    <footer class="image-map-footer"><span>Image import is an editable first draft, not a perfect 3D reconstruction.</span><button type="button" id="image-map-cancel">Cancel</button><button type="button" id="image-map-apply" class="primary" disabled>Apply to World Studio</button></footer>
+  </div>
+</div>
+<script src="image-map.js"></script>
+<div id="geo-modal" class="geo-modal" hidden role="dialog" aria-modal="true" aria-labelledby="geo-heading">
+  <div class="geo-dialog"><header class="geo-header"><div><span class="tag">ROAD BUILDER · GEOJSON · LOCAL IMPORT</span><h2 id="geo-heading">Build roads from real map data</h2><p>Import OpenStreetMap GeoJSON, inspect road alignment, then create an editable road network.</p></div><button id="geo-close" class="geo-close" type="button" aria-label="Close">×</button></header>
+  <section class="geo-body"><figure class="geo-stage"><canvas id="geo-preview" width="1175" height="1280" aria-label="Preview of imported road geometry"></canvas><figcaption>North up by default. Dark roads are imported, amber dots are detected junctions.</figcaption></figure>
+  <aside class="geo-settings"><h3>1. Upload exported roads</h3><label class="geo-upload">Choose GeoJSON (.geojson / .json)<input id="geo-file" type="file" accept=".geojson,.json,application/geo+json,application/json"></label><p id="geo-file-name">No file selected</p><p>Export the BYK College neighborhood as GeoJSON from <a href="https://overpass-turbo.eu/" target="_blank" rel="noopener" style="color:#9ceac7">Overpass Turbo</a>. Instructions are in README.</p>
+  <h3>2. Choose alignment</h3><label>Import mode<select id="geo-import-mode"><option value="replace">New accurate road-first world (recommended)</option><option value="overlay">Align with existing old map (approximate)</option></select></label>
+  <div class="geo-fields"><label>Move East/West (px)<input id="geo-offset-x" type="number" step="5" value="0"></label><label>Move North/South (px)<input id="geo-offset-y" type="number" step="5" value="0"></label></div>
+  <label>Rotate (degrees)<input id="geo-rotation" type="number" min="-180" max="180" step="1" value="0"></label>
+  <label>Old reference image opacity<input id="geo-reference-opacity" type="range" min="0" max="100" value="0"></label>
+  <label style="flex-direction:row;align-items:center;gap:9px"><input id="geo-junctions" type="checkbox" checked> Show detected junctions</label>
+  <div class="geo-summary" id="geo-count">No roads imported</div>
+  <div class="geo-status" id="geo-status" role="status">Upload GeoJSON to begin. All parsing stays in your browser.</div>
+  <p><strong>Accuracy note:</strong> GPS centerlines are real mapped paths. Actual carriageway widths are estimates and road connections may need fixing. Image overlay requires geographic alignment.</p>
+  </aside></section><footer class="geo-footer"><small>Importing a new world downloads a backup before clearing old blocks and props.</small><button id="geo-cancel" type="button">Cancel</button><button id="geo-apply" type="button" class="primary" disabled>Apply Roads to World</button></footer>
+  </div>
+</div>
+<script src="geo-roads-import.js"></script>
+<div class="city-modal" id="city-modal" hidden role="dialog" aria-modal="true" aria-labelledby="city-heading">
+<div class="city-dialog">
+<header class="city-header"><div><span class="tag">AUTO CITY · OPENSTREETMAP · LOCAL IMPORT</span><h2 id="city-heading">Generate buildings beside your real roads</h2><p>One GeoJSON file: automatically aligned footprints, floors and editable 3D blocks.</p></div><button type="button" id="city-close" aria-label="Close Auto City Builder">×</button></header>
+<section class="city-body"><div class="city-preview"><canvas id="city-canvas" width="1175" height="1280" aria-label="Geographic building footprint preview"></canvas><small>Charcoal = mapped roads · mint outlines = proposed buildings · green dot = vehicle spawn</small></div>
+<aside class="city-config">
+<label>01 — Upload GeoJSON containing buildings<input type="file" id="city-file" accept=".geojson,.json,application/geo+json,application/json"></label>
+<div class="city-help"><p>In <a href="https://overpass-turbo.eu/" target="_blank" rel="noopener noreferrer" style="color:#9ceac7">Overpass Turbo</a>, select the <strong>same BYK College area</strong> and export both roads and buildings as GeoJSON. See README for the copy-paste query. No Google Maps imagery required.</p></div>
+<label>02 — How should the map align?<select id="city-mode"><option value="existing">Add buildings to my imported roads (preserve roads)</option><option value="new">New world from roads + buildings in this file</option></select></label>
+<label>Default floors when unknown<input id="city-floors" type="number" min="1" max="15" value="3"></label>
+<label>Maximum buildings (mobile performance)<input id="city-limit" type="number" min="10" max="2200" step="100" value="1400"></label>
+<label class="inline"><input id="city-avoid" type="checkbox" checked> Skip footprints intersecting road surfaces (conservative safety check; may omit some valid buildings)</label>
+<label class="inline"><input id="city-replace" type="checkbox" checked> Replace previously placed buildings (keep roads and street props in existing-road mode)</label>
+<div class="city-result" id="city-summary" role="status">Choose a GeoJSON file to preview buildings.</div>
+<p>Important: mapped building footprints and heights can be missing or inaccurate. Holes and inner courtyards are not modeled. Edit individual buildings afterward.</p>
+</aside></section>
+<footer class="city-footer"><span>Changes are saved to your local draft. Export world.json to publish. A safety backup is downloaded before replacing anything.</span><button id="city-cancel" type="button">Cancel</button><button id="city-apply" type="button" class="primary" disabled>Generate editable city</button></footer>
+</div></div>
+<script src="geo-buildings.js"></script><script src="geo-city-import.js"></script>
+<div id="street-modal" class="street-modal" hidden role="dialog" aria-modal="true" aria-labelledby="street-title"><div class="street-dialog">
+<header class="street-dialog-head"><div><span class="tag">NASHIK WORLD STUDIO · V2.0 (AREA EDITOR)</span><h2 id="street-title">Street Match</h2><p>Compare a game viewpoint to your own street photo. The photo is stored only in this browser and is not exported.</p></div><button id="street-close" type="button" aria-label="Close Street Match">×</button></header>
+<div class="street-dialog-body"><div class="street-photo"><div class="street-preview-placeholder" id="street-photo-placeholder">UPLOAD A STREET PHOTO</div><img id="street-photo-preview" hidden alt="Your chosen street photograph"></div><div class="street-controls">
+<label class="street-upload">1 · Choose reference image <input id="street-photo-file" type="file" accept="image/jpeg,image/png,image/webp"></label>
+<p class="street-note">Your image can be a reference screenshot. It is never bundled into the public game or shared automatically.</p>
+<div class="street-point"><div>2 · Choose matching camera location</div><b id="street-coords">Not selected</b><button id="street-pick" type="button">Pick on map</button></div>
+<label class="street-field">3 · Facing direction <input type="range" id="street-angle" min="0" max="359" value="180"><span id="street-angle-output">180°</span></label>
+<p class="street-note">0° faces south on the map; 90° faces east; 180° north; 270° west. Adjust until the game faces the same street as the photo.</p>
+<button id="street-preview-game" type="button" class="street-go">Preview this viewpoint ↗</button><p id="street-message" class="street-note" role="status">The game location will only change for this temporary preview.</p>
+</div></div></div></div>
+<link rel="stylesheet" href="street-match.css"><script src="street-match.js"></script>
+</body></html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101b22"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon.png">
+<title>Nashik / First Drive — Free Roam</title><link rel="stylesheet" href="styles.css">
+</head><body>
+<canvas id="gl" aria-label="3D city driving game"></canvas>
+<div id="error" hidden role="alert"></div>
+<div id="start-screen" class="start-screen"><div class="cover">
+  <div class="kicker">NASHIK / FIRST DRIVE <span>MAP BLOCKOUT</span></div>
+  <h1>YOUR CITY.<br><em>YOUR DRIVE.</em></h1>
+  <p>Explore Nashik using real map data. If the full city has not been installed, the College Road prototype opens instead.</p>
+  <button id="start-btn" class="primary">START DRIVING <span>↗</span></button>
+  <small><a href="city-setup.html" style="color:#96eac5;display:inline-block;margin:8px 0">Set up entire Nashik city ↗</a></small><small>Mobile: landscape recommended • steering on the left, pedals on the right</small>
+</div></div>
+<div id="hud" class="hidden">
+  <header><div class="brand"><b>N<span>.</span></b><div>NASHIK <small>FIRST DRIVE</small></div></div>
+  <nav><button id="map-btn" aria-label="View map">MAP</button><button id="view-btn" aria-label="Change camera">CAM</button><button id="fullscreen-btn" title="Fullscreen" aria-label="Fullscreen">⛶</button><button id="pause-btn" aria-label="Pause">Ⅱ</button></nav>
+  </header>
+  <div class="status"><i></i><b id="state">FREE ROAM</b><span id="drive-status">DRIVING</span></div><div id="world-status" class="world-status" aria-live="polite">Loading world…</div>
+  <div class="map-mini" aria-label="Nearby streets minimap, centered on player"><div class="mini-map-inner"><canvas id="minimap-canvas" width="192" height="192" aria-label="Nearby roads and buildings"></canvas><i id="minimap-dot" aria-label="Player heading"></i><i id="minimap-center" aria-hidden="true"></i></div><span id="minimap-location" class="minimap-location" aria-label="Current mapped street">LOCATING...</span></div>
+  <div class="bottom-bar"><div id="speed-panel" class="speed-panel"><b id="speed">000</b><small>KM/H</small></div>
+    <div class="helper">W/S DRIVE &nbsp; · &nbsp; A/D STEER &nbsp; · &nbsp; E ENTER/EXIT &nbsp; · &nbsp; M MAP</div>
+    <button id="interact-btn" class="interaction" aria-label="Enter or exit car">↗ <span>EXIT / ENTER</span></button>
+  </div>
+  <div class="mobile-controls" aria-label="Touch driving controls">
+    <div class="steer"><button data-key="left" aria-label="Steer left">◀</button><button data-key="right" aria-label="Steer right">▶</button></div>
+    <div class="pedals"><button data-key="backward" aria-label="Brake or reverse">BRAKE</button><button data-key="forward" aria-label="Accelerate">GO</button></div>
+  </div>
+</div>
+<div id="map-overlay" class="hidden" role="dialog" aria-modal="true" aria-label="Nashik City Explorer">
+  <div class="explorer-shell">
+    <div class="explorer-top">
+      <div><small>WORLD MAP / NASHIK</small><strong id="map-heading">CITY EXPLORER</strong><p id="map-explainer">Inspect roads, search streets and teleport anywhere on a mapped road.</p></div>
+      <button id="close-map" type="button">CLOSE ×</button>
+    </div>
+    <div class="explorer-body">
+      <section class="explorer-main">
+        <div class="explorer-toolbar"><span>ROAD NETWORK · <span id="map-zoom-label">100%</span></span>
+          <div class="explorer-zoom"><button id="map-zoom-out" type="button" title="Zoom out">−</button><button id="map-zoom-in" type="button" title="Zoom in">+</button><button id="map-fit" type="button">FIT</button><button id="map-locate" type="button">MY CAR</button></div>
+        </div>
+        <div id="explorer-stage" class="explorer-stage"><canvas id="explorer-map" aria-label="Full city map; drag to pan, scroll to zoom, click roads to select a destination"></canvas></div>
+        <div class="explorer-legend"><span class="explorer-key you"></span> YOUR POSITION <span class="explorer-key dest"></span> DESTINATION <span class="explorer-hint">DRAG TO PAN · SCROLL TO ZOOM · CLICK TO SELECT</span></div>
+      </section>
+      <aside class="explorer-sidebar">
+        <label for="map-search">FIND A STREET</label><input id="map-search" type="search" placeholder="Search mapped road names…" autocomplete="off" />
+        <div id="map-results" class="explorer-results"></div>
+        <div class="explorer-sidebar-title">QUICK AREAS</div><div id="explorer-districts" class="explorer-districts"></div>
+        <div class="explorer-selection-card"><small>SELECTED DESTINATION</small><b id="explorer-selection">Choose a road to inspect</b>
+          <p id="explorer-message">Select a place on the map or choose a location to teleport near it.</p>
+          <button id="map-teleport" type="button" disabled>TELEPORT TO ROAD ↗</button>
+        </div>
+        <div class="explorer-credit"><span id="location-text">MAP POSITION</span><br/>© OpenStreetMap contributors · Approximate road widths. No live navigation.</div>
+      </aside>
+    </div>
+  </div>
+</div>
+<aside id="street-reference" class="street-reference" hidden aria-label="Street Match reference photo"><div class="street-ref-header"><div><b>STREET MATCH</b><small>Reference photo · local preview only</small></div><button id="street-hide" type="button" aria-label="Hide reference photo">×</button></div><img id="street-reference-image" alt="Your uploaded street reference"><label>Photo opacity <input id="street-opacity" type="range" min="30" max="100" value="100"></label><small>Reference is not used as a game texture. Compare camera angle and landmarks, then edit the world in Studio.</small></aside>
+<div id="rotate-hint" hidden><span>↻</span><strong>Rotate your phone</strong><small>Landscape gives you more room to drive.</small><button id="hint-dismiss">Continue in portrait</button></div>
+<script src="shapes.js"></script><script src="geo-roads.js"></script><script src="road-mesh.js"></script><script src="mini-map.js"></script><script src="city-explorer.js"></script><script src="game.js"></script>
+</body></html>

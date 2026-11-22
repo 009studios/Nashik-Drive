@@ -1,0 +1,41 @@
+.geo-open{overflow:hidden} .geo-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#05090dcb;padding:16px;color:#e2ebef}
+.geo-dialog{display:flex;flex-direction:column;background:#161f28;border:1px solid #41515e;border-radius:18px;width:min(1160px,100%);max-height:94dvh;box-shadow:0 25px 80px #0008;overflow:hidden}
+.geo-header{padding:19px 21px;border-bottom:1px solid #34414c;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.geo-header h2{margin:4px 0;font-size:22px;letter-spacing:-.03em}.geo-header p{font-size:12px;color:#9caeba;margin:0}.geo-close{background:#303b46;color:white;border:1px solid #55616a;border-radius:8px;font-size:22px;padding:4px 12px}
+.geo-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0;min-height:0;flex:1}
+.geo-stage{min-height:0;background:#0d1720;padding:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;overflow:hidden}
+.geo-stage canvas{min-width:0;min-height:0;max-width:100%;max-height:min(65dvh,660px);height:auto;object-fit:contain;border:1px solid #4a6159;border-radius:8px;box-shadow:0 8px 35px #0003}
+.geo-stage figcaption{font-size:11px;color:#9aaeb8;text-align:center}
+.geo-settings{overflow:auto;min-height:0;padding:18px;background:#1c2832;border-left:1px solid #3b4955;display:flex;flex-direction:column;gap:13px}
+.geo-settings h3{margin:0;font-size:13px}.geo-settings p{font-size:11px;color:#adbac4;line-height:1.5;margin:0}
+.geo-settings label:not(.geo-upload){display:flex;flex-direction:column;gap:5px;font-size:11px;color:#c3d0d8;font-weight:650}
+.geo-settings input[type=number],.geo-settings select{width:100%;border-radius:8px;padding:10px;border:1px solid #485b68;background:#101921;color:#fff;font-size:12px}
+.geo-settings input[type=range]{width:100%;accent-color:#8be9bb}.geo-settings .geo-upload{display:flex;flex-direction:column;gap:7px;align-items:stretch;padding:14px;border:1px dashed #5ca68a;border-radius:11px;color:#b4f2d3;cursor:pointer;font-size:12px;font-weight:750}
+.geo-settings .geo-upload input{font-size:11px;max-width:100%}
+.geo-fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}.geo-summary{border-radius:9px;padding:10px;background:#293d42;font-size:11px;color:#cff5de;font-weight:750}
+.geo-status{border-radius:9px;border:1px solid #4f6563;padding:10px;font-size:11px;line-height:1.5}.geo-status.error{color:#ffb3ac;border-color:#a55c52}
+.geo-footer{padding:13px 18px;border-top:1px solid #3e4b55;display:flex;gap:9px;justify-content:flex-end;align-items:center}.geo-footer small{color:#9daeb8;flex:1;line-height:1.4}.geo-footer button{padding:10px 15px;border:1px solid #53616c;border-radius:9px;background:#2c3944;color:#eef6f8;font-weight:750}.geo-footer button.primary{background:#85eaba;color:#102c22;border-color:#85eaba}.geo-footer button:disabled{opacity:.35}
+@media(max-width:750px){.geo-modal{padding:4px}.geo-dialog{max-height:100dvh;height:100dvh;border-radius:0}.geo-body{display:flex;flex-direction:column;overflow:auto}.geo-stage{flex:0 0 auto;padding:9px}.geo-stage canvas{max-height:34dvh}.geo-settings{overflow:visible;border-left:0;border-top:1px solid #3b4955;padding:13px;gap:10px}.geo-header{padding:12px}.geo-header h2{font-size:17px}.geo-footer{flex:0 0 auto;padding:9px}.geo-footer small{display:none}}
+/* Auto City importer */
+.city-trigger{background:#183d38!important;border-color:#337969!important;color:#baf3d6!important}
+.city-modal[hidden]{display:none!important}.city-modal{position:fixed;z-index:1100;inset:0;background:#061116d9;display:flex;justify-content:center;align-items:center;padding:13px;color:#f0f7f7}
+.city-dialog{width:min(1400px,98vw);height:min(880px,95dvh);background:#15212a;border:1px solid #45645d;border-radius:21px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 35px 90px #0009}
+.city-header{padding:19px 23px;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid #39504f}
+.city-header h2{font-size:23px;margin:6px 0}.city-header p{font-size:12px;color:#a9c5c0;margin:0}
+.city-header button{background:#263840;border:1px solid #52636a;border-radius:10px;color:white;font-size:23px;min-width:42px;height:42px;cursor:pointer}
+.city-body{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(305px,.78fr);min-height:0;flex:1}
+.city-preview{min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:15px;background:#09171c}
+.city-preview canvas{display:block;max-width:100%;max-height:calc(100% - 38px);width:auto;height:auto;border-radius:10px;border:1px solid #4e635f}
+.city-preview small{color:#a4bcb9;text-align:center;font-size:11px}
+.city-config{padding:19px;overflow:auto;border-left:1px solid #364f4f;display:flex;flex-direction:column;gap:13px;background:#1a2931;font-size:12px}
+.city-config label{display:flex;flex-direction:column;gap:6px;font-weight:650;color:#c6dddb}
+.city-config label.inline{flex-direction:row;align-items:flex-start;gap:9px;font-weight:500;line-height:1.5}
+.city-config input[type=file],.city-config select,.city-config input[type=number]{width:100%;max-width:100%;background:#101e27;color:#e9f6f1;border:1px solid #506761;border-radius:9px;padding:10px;font-size:12px}
+.city-config input[type=checkbox]{margin-top:3px;accent-color:#73eab1}
+.city-config p{margin:0;font-size:11px;line-height:1.55;color:#abc0c0}
+.city-config .city-help{padding:12px;border:1px solid #45635d;background:#14282a;border-radius:10px}
+.city-config .city-result{padding:12px;background:#243c3b;border-radius:10px;color:#b0edcc;white-space:pre-line;font-size:12px;line-height:1.55}
+.city-config .city-result.error{background:#43292d;color:#ffb9b9}
+.city-footer{padding:14px 20px;display:flex;gap:12px;align-items:center;justify-content:flex-end;border-top:1px solid #374f4d}
+.city-footer span{flex:1;color:#aac0c1;font-size:11px;line-height:1.5}.city-footer button{padding:11px 14px;border-radius:9px;border:1px solid #527068;background:#2e4348;color:#fff;font-weight:700;cursor:pointer}.city-footer button.primary{background:#85edb6;color:#163127;border-color:#85edb6}.city-footer button:disabled{opacity:.35;cursor:not-allowed}
+@media(max-width:750px){.city-modal{padding:0}.city-dialog{height:100dvh;max-height:100dvh;border-radius:0}.city-header{padding:11px 14px}.city-header h2{font-size:18px}.city-body{display:flex;flex-direction:column;overflow:auto}.city-preview{min-height:220px;max-height:35dvh}.city-preview canvas{max-height:27dvh}.city-config{overflow:visible;border-left:0;border-top:1px solid #405457;padding:13px}.city-footer span{display:none}}
