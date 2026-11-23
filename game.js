@@ -159,16 +159,33 @@
   const isLocal=/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   const previewMode=isLocal&&new URLSearchParams(location.search).get('preview')==='1';
   async function getWorld(){
-    if(!previewMode && !new URLSearchParams(location.search).has('college')){
-      try{const city=await fetch('city-world.json',{cache:'no-store'});
-        if(city.ok){const data=await city.json();if(data.cityMode && data.roadNetwork?.roads?.length)return data;}
-      }catch(e){console.warn('Full city is not installed yet; using College Road world.',e);}
+    const query=new URLSearchParams(location.search);
+    const college=query.has('college');
+    // The owner 3D editor saves only sparse changes, never an edited copy of city-world.json.
+    let editorPatch=null;
+    if(previewMode){try{const saved=localStorage.getItem('nashik-studio-preview-overrides');if(saved)editorPatch=JSON.parse(saved);}catch(e){console.warn('Invalid 3D studio preview edit:',e);}}
+    let data=null;
+    if(!college){
+      try{const r=await fetch('city-world.json',{cache:'no-store'});if(r.ok){const city=await r.json();if(city.cityMode&&city.roadNetwork?.roads?.length)data=city;}}
+      catch(e){console.warn('Full city is not installed; using College Road world.',e);}
     }
-    if(previewMode){try{const draft=localStorage.getItem('nashik-world-studio-v08');if(draft)return JSON.parse(draft);}catch(e){console.warn('Draft not available:',e);}}
-    const r=await fetch('world.json?v='+Date.now());
-    if(r.ok)return r.json();
-    const [b,a,m]=await Promise.all(['blocks.json','assets.json','map_edits.json'].map(f=>fetch(f).then(r=>{if(!r.ok)throw new Error(f+' missing');return r.json();})));
-    return {blocks:b,assets:a,mapEdits:m};
+    // Preserve the older 2D Studio preview workflow when no new 3D override is active.
+    if(!data&&previewMode&&!editorPatch){try{const draft=localStorage.getItem('nashik-world-studio-v08');if(draft)data=JSON.parse(draft);}catch(e){console.warn('Old editor draft not available:',e);}}
+    if(!data){const r=await fetch('world.json?v='+Date.now());
+      if(r.ok)data=await r.json();else{
+        const [b,a,m]=await Promise.all(['blocks.json','assets.json','map_edits.json'].map(f=>fetch(f).then(r=>{if(!r.ok)throw new Error(f+' missing');return r.json();})));
+        data={blocks:b,assets:a,mapEdits:m};
+      }
+    }
+    // A malformed or mismatched override is ignored with a warning; the base world remains usable.
+    let published=null;
+    if(!editorPatch){try{const r=await fetch('world-overrides.json',{cache:'no-store'});if(r.ok)published=await r.json();}catch(e){console.warn('No published world overrides.',e);}}
+    const changes=editorPatch||published;
+    if(changes&&window.NashikWorldOverrides){
+      try{window.NashikWorldOverrides.apply(data,changes);console.info('World Studio changes loaded.');}
+      catch(e){console.warn('World Studio edits were rejected to protect base map:',e);}
+    }
+    return data;
   }
   const worldPromise=getWorld();
   const imagePromise=worldPromise.then(data=>new Promise((resolve,reject)=>{
@@ -474,11 +491,40 @@
       }
     }
   }
-  function drawCar(){const x=car.x,z=car.z,a=car.yaw;const s=Math.sin(a),c=Math.cos(a);
-    const part=(side,forward,height,sw,sh,sd,color)=>{const X=x+c*side+s*forward,Z=z-s*side+c*forward;cube(X,height,Z,sw,sh,sd,color,a);};
-    part(0,0,.85,2.15,1.2,4.6,carBody);part(0,-.30,1.41,1.80,.44,2.75,carBody);part(0,.58,1.47,1.78,.24,.13,glass);
+  // Upload the original lightweight Creta-inspired SUV once, not every frame.
+  // Each color is one batched draw call using the game's existing WebGL shaders.
+  const cretaGpu=(()=>{
+    const source=window.NashikCretaModel;
+    if(!source?.batches?.length)return null;
+    return source.batches.map(batch=>{
+      const carVao=gl.createVertexArray();gl.bindVertexArray(carVao);
+      const vertexBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER,batch.vertices,gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);
+      gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,12);
+      return {vao:carVao,buffer:vertexBuffer,count:batch.count,color:batch.color};
+    });
+  })();
+  gl.bindVertexArray(vao);
+  function drawCar(){
+    if(cretaGpu){
+      gl.uniformMatrix4fv(U.model,false,transform(car.x,0,car.z,1,1,1,car.yaw));
+      // Procedural panels are intentionally double-sided for low-poly facets.
+      gl.disable(gl.CULL_FACE);
+      for(const part of cretaGpu){
+        gl.bindVertexArray(part.vao);gl.uniform3fv(U.color,part.color);
+        gl.drawArrays(gl.TRIANGLES,0,part.count);
+      }
+      gl.bindVertexArray(vao);gl.enable(gl.CULL_FACE);
+      return;
+    }
+    // Safe fallback if the separate car script is missing on a deployment.
+    const x=car.x,z=car.z,a=car.yaw,s=Math.sin(a),c=Math.cos(a);
+    const part=(side,forward,height,sw,sh,sd,color)=>{
+      cube(x+c*side+s*forward,height,z-s*side+c*forward,sw,sh,sd,color,a);
+    };
+    part(0,0,.85,2.15,1.2,4.6,carBody);part(0,-.30,1.41,1.80,.44,2.75,carBody);
     for(const side of [-1,1])for(const f of [-1.42,1.40])part(side*1.12,f,.44,.36,.79,.73,wheel);
-    for(const side of [-.73,.73]){part(side,2.33,.85,.48,.23,.1,headlight);part(side,-2.34,.85,.45,.24,.10,[.82,.15,.13]);}
   }
   function drawPerson(){const x=person.x,z=person.z;cube(x,.82,z,.63,1.08,.45,[.23,.40,.50],person.yaw);cube(x,1.55,z,.42,.42,.43,[.72,.52,.42],person.yaw);for(const d of [-.22,.22])cube(x+d,.32,z,.18,.6,.22,[.22,.25,.30]);}
   function enterExit(){if(!playing||paused)return;if(car.driving){if(Math.abs(car.v)>2)return;car.driving=false;const dx=Math.cos(car.yaw)*3.1,dz=-Math.sin(car.yaw)*3.1;person.x=car.x+dx;person.z=car.z+dz;person.yaw=car.yaw;}

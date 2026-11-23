@@ -1,0 +1,17 @@
+{
+  "format": "nashik-world-overrides",
+  "version": 1,
+  "base": {
+    "scale": 23.5,
+    "cityMode": true,
+    "roads": 15102,
+    "blocks": 48423,
+    "centerLat": 20.0,
+    "centerLon": 73.79
+  },
+  "buildings": {},
+  "roads": {},
+  "assetsAdded": [],
+  "assetsDeleted": [],
+  "savedAt": null
+}

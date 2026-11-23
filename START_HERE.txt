@@ -1,3 +1,17 @@
+NASHIK FIRST DRIVE v3.0 — 3D WORLD STUDIO + FULL CITY MAP
+
+1. Double-click OPEN_WORLD_STUDIO_3D.command
+2. It opens http://localhost:8000/world-studio-3d.html
+3. Nashik city-world.json is INCLUDED: 15,102 roads and 48,423 building footprints.
+4. Search for College Road or choose an area on the map.
+5. Orbit and edit buildings/roads and place street props in the 3D view.
+6. Click Test drive this street for local preview.
+7. Export edits to world-overrides.json (copy it beside city-world.json to publish).
+
+The original city-world.json stays unchanged.
+
+More: README_WORLD_STUDIO_3D.md
+
 NASHIK FIRST DRIVE v2.0 — FULL CITY BUILDER + MINIMAP FIX
 
 The College Road world is included and still opens immediately.

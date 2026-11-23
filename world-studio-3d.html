@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nashik World Studio 3D — Owner workspace</title>
+<link rel="stylesheet" href="world-studio-3d.css"></head>
+<body>
+<div class="shell">
+ <header class="top">
+  <div class="brand"><div class="mark">N<span>.</span></div><div><strong>WORLD STUDIO <em>3D</em></strong><small>NASHIK / DEVELOPMENT WORKSPACE</small></div></div>
+  <div class="top-links"><span id="save-state" class="state">Loading world…</span><button id="undo" title="Undo">↶ Undo</button><button id="redo" title="Redo">↷ Redo</button><a href="studio.html" title="Open the earlier two-dimensional editor">2D legacy editor</a><button id="export" class="accent">Export edits ↓</button></div>
+ </header>
+ <div class="main">
+  <aside class="sidebar">
+   <section class="panel intro"><span class="eyebrow">WORLD SOURCE</span><h1>Build Nashik, one street at a time.</h1><p id="source-status">Opening the installed world data…</p>
+    <label class="file-button">Import city-world.json<input type="file" id="file" accept=".json,application/json"></label>
+    <small>Load your existing full Nashik JSON. No new map download. Your imported file stays unchanged.</small>
+   </section>
+   <section class="panel"><div class="line"><span class="eyebrow">GO TO A PLACE</span><span class="little" id="city-stat">—</span></div>
+    <input id="search" type="search" placeholder="Search street e.g. College Road" autocomplete="off" />
+    <div id="search-results" class="results"></div>
+    <button id="overview" class="secondary wide">Choose location on city map</button>
+   </section>
+   <section class="panel"><span class="eyebrow">CREATE AN OBJECT</span><div class="toolgrid">
+    <button data-add="tree">♣<small>Tree</small></button><button data-add="lamp">╽<small>Lamp</small></button>
+    <button data-add="traffic-signal">▦<small>Signal</small></button><button data-add="median">═<small>Divider</small></button>
+    <button data-add="planter">▣<small>Planter</small></button><button data-add="billboard">▤<small>Billboard</small></button>
+    <button data-add="sign">▭<small>Sign</small></button><button data-add="bench">▰<small>Bench</small></button>
+   </div><small>New props are placed at the editor focus. Select and adjust them in Properties.</small></section>
+   <section class="panel tips"><span class="eyebrow">NAVIGATION</span><p><b>Drag</b> orbit · <b>Shift + drag</b> pan · <b>Alt + drag</b> move selected prop · <b>Scroll</b> zoom · <b>Click</b> select.</p><p>The 2D map is for choosing areas; actual editing happens in the 3D view.</p></section>
+  </aside>
+  <main class="center">
+   <div class="scene-toolbar"><div><span class="eyebrow">LIVE SCENE / <span id="place-label">NEAR PLAYER SPAWN</span></span><strong id="scene-heading">3D Street Editor</strong></div>
+    <div class="tools"><button id="cam-left" title="Rotate view left">↶</button><button id="cam-right" title="Rotate view right">↷</button><button id="zoom-plus">＋</button><button id="zoom-minus">−</button><button id="reset-camera">Reset view</button><button id="toggle-plan">Map</button></div></div>
+   <div id="viewport" class="viewport"><canvas id="scene" aria-label="Interactive three dimensional editing viewport"></canvas>
+    <div class="overlay-label">3D WORLD VIEW <span id="scene-count">·</span></div><div id="selection-label" class="selection-label" hidden></div>
+    <div class="compass">N<br><span>↑</span></div></div>
+   <div class="bottombar"><span id="position">X — / Y —</span><span id="message" role="status">Select a building or street to edit.</span><button id="drive">Test drive this street ↗</button></div>
+  </main>
+  <aside class="inspector"><div class="inspector-head"><span class="eyebrow">OBJECT INSPECTOR</span><h2 id="object-title">Nothing selected</h2><p id="object-description">Click a building, road or added object in the 3D view to change its properties.</p></div><form id="props" class="props"></form>
+   <div class="inspector-foot"><button id="duplicate" disabled>Duplicate prop</button><button id="remove" disabled class="danger">Delete object</button></div>
+   <div class="help">Your source map is read-only. Exported <code>world-overrides.json</code> stores only your changes. Existing roads and buildings are preserved.</div>
+  </aside>
+ </div>
+</div>
+<div class="map-modal" id="map-modal" hidden><div class="map-dialog"><header><div><span class="eyebrow">NASHIK CITY OVERVIEW</span><h2>Pick an area to edit in 3D</h2><p>Click a road on the map, or search for a named road in the left sidebar.</p></div><button id="close-overview">Close ×</button></header>
+ <canvas id="overview-canvas" aria-label="City overview map"></canvas><footer><span>Map data © OpenStreetMap contributors · North up</span><button id="overview-focus" class="accent">Edit selected area ↗</button></footer></div></div>
+<input type="file" id="patch-file" accept=".json" hidden>
+<script src="shapes.js"></script><script src="world-overrides.js"></script><script src="world-studio-3d.js"></script>
+</body></html>
